@@ -1,5 +1,6 @@
 import e from "express";
 import ProductService from "./products.service";
+import { Product } from "./products.model";
 
 const router = e.Router();
 const service = new ProductService;
@@ -9,11 +10,13 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  const body = req.body;
+  const body: Product = req.body;
+
+  const data = service.createProduct(body);
 
   res.status(201).json({
-    message: "created",
-    data: body,
+    message: "content created succesfully",
+    data
   })
 })
 
@@ -35,19 +38,28 @@ router.get('/:id', (req, res) => {
 
 router.patch('/:id', (req, res) => {
   const { body, params: { id } } = req
+  let product
 
-  res.status(200).json({
-    message: "updated partially",
-    data: body,
-    id
-  })
+  try {
+    product = service.updateProduct(Number(id), body)
+
+    res.status(200).json({
+      message: "content updated partially succesfully",
+      data: body,
+      id
+    })
+  } catch (err) {
+    if (!(err instanceof Error)) { return }
+
+    res.status(404).json({ message: err.message })
+  }
 })
 
 router.put('/:id', (req, res) => {
   const { body, params: { id } } = req
 
   res.status(200).json({
-    message: "updated",
+    message: "content updated succesfully",
     data: body,
     id
   })
@@ -55,13 +67,18 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params
+  try {
+    service.deleteProduct(Number(id));
 
-  service.deleteProduct(Number(id));
+    res.status(200).json({
+      message: "content deleted succesfully",
+      id
+    })
+  } catch (err) {
+    if (!(err instanceof Error)) { return }
 
-  res.status(200).json({
-    message: "deleted",
-    id
-  })
+    res.status(404).json({ message: err.message })
+  }
 })
 
 export default router
