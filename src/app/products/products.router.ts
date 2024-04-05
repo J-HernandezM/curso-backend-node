@@ -1,22 +1,20 @@
 import e from "express";
-import { faker } from "@faker-js/faker";
+import ProductService from "./products.service";
 
 const router = e.Router();
+const service = new ProductService;
 
 router.get('/', (req, res) => {
-  const { size } = req.query
-  const products = []
-  const limit = Number(size) || 10
+  res.json(service.getProducts())
+})
 
-  for (let i = 0; i < limit; i++) {
-    products.push({
-      name: faker.commerce.productName(),
-      price: Number(faker.commerce.price()),
-      image: faker.image.url()
-    })
-  }
+router.post('/', (req, res) => {
+  const body = req.body;
 
-  res.json(products)
+  res.status(201).json({
+    message: "created",
+    data: body,
+  })
 })
 
 router.get('/filter', (req, res) => {
@@ -25,11 +23,44 @@ router.get('/filter', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const { id } = req.params
+  const product = service.getProductById(Number(id))
 
-  res.json({
-    id,
-    name: `Producto: ${id}`,
-    price: 1000,
+  if (!product) {
+    res.status(404).json({ message: '404 product not found' })
+    return
+  }
+
+  res.json(product)
+})
+
+router.patch('/:id', (req, res) => {
+  const { body, params: { id } } = req
+
+  res.status(200).json({
+    message: "updated partially",
+    data: body,
+    id
+  })
+})
+
+router.put('/:id', (req, res) => {
+  const { body, params: { id } } = req
+
+  res.status(200).json({
+    message: "updated",
+    data: body,
+    id
+  })
+})
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params
+
+  service.deleteProduct(Number(id));
+
+  res.status(200).json({
+    message: "deleted",
+    id
   })
 })
 
