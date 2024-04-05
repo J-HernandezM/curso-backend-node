@@ -1,12 +1,15 @@
 import e from "express";
 import ProductService from "./products.service";
 import { Product } from "./products.model";
+import 'express-async-errors'
+
 
 const router = e.Router();
 const service = new ProductService;
 
-router.get('/', (req, res) => {
-  res.json(service.getProducts())
+router.get('/', async (req, res) => {
+  const products: Product[] = await service.getProducts()
+  res.status(200).json(products)
 })
 
 router.post('/', (req, res) => {
@@ -36,23 +39,15 @@ router.get('/:id', (req, res) => {
   res.json(product)
 })
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', async (req, res) => {
   const { body, params: { id } } = req
-  let product
 
-  try {
-    product = service.updateProduct(Number(id), body)
-
-    res.status(200).json({
-      message: "content updated partially succesfully",
-      data: body,
-      id
-    })
-  } catch (err) {
-    if (!(err instanceof Error)) { return }
-
-    res.status(404).json({ message: err.message })
-  }
+  const product = await service.updateProduct(Number(id), body)
+  res.status(200).json({
+    message: "content updated partially succesfully",
+    data: product,
+    id
+  })
 })
 
 router.put('/:id', (req, res) => {
@@ -65,20 +60,14 @@ router.put('/:id', (req, res) => {
   })
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params
-  try {
-    service.deleteProduct(Number(id));
+  await service.deleteProduct(Number(id));
 
-    res.status(200).json({
-      message: "content deleted succesfully",
-      id
-    })
-  } catch (err) {
-    if (!(err instanceof Error)) { return }
-
-    res.status(404).json({ message: err.message })
-  }
+  res.status(200).json({
+    message: "content deleted succesfully",
+    id
+  })
 })
 
 export default router

@@ -33,31 +33,39 @@ class ProductService {
     return newProduct
   }
 
-  getProducts(): Product[] {
-    return this.products
+  getProducts(): Promise<Product[]> {
+    // Connection to DB its asynchronous
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(this.products), 1000)
+    })
   }
 
   getProductById(id: number): Product {
     return this.products.find(product => product.id === id)!;
   }
 
-  updateProduct(id: number, changes: Product): Product {
-    const i = this.products.findIndex(product => product.id === id)
-    if (i === -1) { throw new Error('Product not found') }
+  updateProduct(id: number, changes: Product): Promise<Product> {
+    return new Promise((resolve, reject) => {
+      const i = this.products.findIndex(product => product.id === id)
+      if (i === -1) { reject(new Error('Product not found')) }
 
-    this.products[i] = {
-      ...this.products[i],
-      ...changes
-    }
+      this.products[i] = {
+        ...this.products[i],
+        ...changes
+      }
 
-    return this.products[i]
+      resolve(this.products[i])
+    })
   }
 
-  deleteProduct(id: number): void {
-    const exist = this.products.some(product => product.id === id)
-    if (!exist) { throw new Error('Product not found') }
+  deleteProduct(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const exist = this.products.some(product => product.id === id)
+      if (!exist) { reject(new Error('Product not found')) }
 
-    this.products = this.products.filter(product => product.id !== id)
+      this.products = this.products.filter(product => product.id !== id)
+      resolve()
+    })
   }
 }
 
