@@ -2,6 +2,8 @@ import e from "express";
 import ProductService from "./products.service";
 import { Product } from "./products.model";
 import 'express-async-errors'
+import validator from "../../middlewares/validator.handler";
+import { createProductSchema, getProductSchema, updateProductSchema } from "../../schemas/product.schemas";
 
 
 const router = e.Router();
@@ -12,7 +14,7 @@ router.get('/', async (req, res) => {
   res.status(200).json(products)
 })
 
-router.post('/', (req, res) => {
+router.post('/', validator(createProductSchema, 'body'), (req, res) => {
   const body: Product = req.body;
 
   const data = service.createProduct(body);
@@ -27,7 +29,7 @@ router.get('/filter', (req, res) => {
   res.send('Soy un filtro')
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validator(getProductSchema, 'params'), async (req, res) => {
   const { id } = req.params
   const product = await service.getProductById(Number(id))
 
@@ -39,16 +41,19 @@ router.get('/:id', async (req, res) => {
   res.json(product)
 })
 
-router.patch('/:id', async (req, res) => {
-  const { body, params: { id } } = req
+router.patch('/:id',
+  validator(getProductSchema, 'params'),
+  validator(updateProductSchema, 'body'),
+  async (req, res) => {
+    const { body, params: { id } } = req
 
-  const product = await service.updateProduct(Number(id), body)
-  res.status(200).json({
-    message: "content updated partially succesfully",
-    data: product,
-    id
+    const product = await service.updateProduct(Number(id), body)
+    res.status(200).json({
+      message: "content updated partially succesfully",
+      data: product,
+      id
+    })
   })
-})
 
 router.put('/:id', (req, res) => {
   const { body, params: { id } } = req
