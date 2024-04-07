@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import e from "express";
 import apiRouter from "./app/api.router";
-import { logErrors, errorHandler } from './middlewares/error.handler'
+import { logErrors, errorHandler, boomErrorHandler } from './middlewares/error.handler'
 
 const app = e();
 const port = 3000;
@@ -18,6 +18,7 @@ app.get('/nueva-ruta', (req, res) => {
 
 apiRouter(app);
 app.use(logErrors)
+app.use(boomErrorHandler)
 app.use(errorHandler)
 
 app.listen(port, () => {

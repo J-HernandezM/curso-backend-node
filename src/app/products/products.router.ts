@@ -27,9 +27,9 @@ router.get('/filter', (req, res) => {
   res.send('Soy un filtro')
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params
-  const product = service.getProductById(Number(id))
+  const product = await service.getProductById(Number(id))
 
   if (!product) {
     res.status(404).json({ message: '404 product not found' })

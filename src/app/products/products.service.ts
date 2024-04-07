@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker"
 import { Product } from "./products.model";
+import { conflict, notFound } from "@hapi/boom";
 
 class ProductService {
   private products: Product[] = []
@@ -14,18 +15,20 @@ class ProductService {
         id: i,
         name: faker.commerce.productName(),
         price: Number(faker.commerce.price()),
-        image: faker.image.url()
+        image: faker.image.url(),
+        blocked: faker.datatype.boolean()
       })
     }
   }
 
   createProduct(product: Product): Product {
-    const { name, price, image } = product;
+    const { name, price, image, blocked } = product;
     const newProduct = {
       id: this.products.length + 1,
       name,
       image,
-      price
+      price,
+      blocked
     }
 
     this.products.push(newProduct)
@@ -40,14 +43,20 @@ class ProductService {
     })
   }
 
-  getProductById(id: number): Product {
-    return this.products.find(product => product.id === id)!;
+  getProductById(id: number): Promise<Product> {
+    return new Promise((resolve, reject) => {
+      const i = this.products.findIndex(product => product.id === id)
+      if (i === -1) { reject(notFound('Product not found')) }
+      if (this.products[i].blocked === true) { reject(conflict('Product is blocked')) }
+
+      resolve(this.products[i])
+    })
   }
 
   updateProduct(id: number, changes: Product): Promise<Product> {
     return new Promise((resolve, reject) => {
       const i = this.products.findIndex(product => product.id === id)
-      if (i === -1) { reject(new Error('Product not found')) }
+      if (i === -1) { reject(notFound('Product not found')) }
 
       this.products[i] = {
         ...this.products[i],
@@ -61,7 +70,7 @@ class ProductService {
   deleteProduct(id: number): Promise<void> {
     return new Promise((resolve, reject) => {
       const exist = this.products.some(product => product.id === id)
-      if (!exist) { reject(new Error('Product not found')) }
+      if (!exist) { reject(notFound('Product not found')) }
 
       this.products = this.products.filter(product => product.id !== id)
       resolve()
