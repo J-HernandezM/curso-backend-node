@@ -1,5 +1,5 @@
-import { Boom, badRequest } from "@hapi/boom";
-import { NextFunction, Request, Response } from "express";
+import { badRequest } from "@hapi/boom";
+import { NextFunction, Response } from "express";
 import Joi from "joi";
 
 const validator = (schema: Joi.Schema, property: any) => {
