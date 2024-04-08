@@ -7,7 +7,7 @@ import { logErrors, errorHandler, boomErrorHandler } from './middlewares/error.h
 
 const app = e();
 const port = 3000;
-const whitelist = ['http://localhost:5500', `http://localhost:${port}`]
+const whitelist = ['http://localhost:5500', `http://localhost:${port}`, 'https://curso-backend-node-production.up.railway.app']
 const options: CorsOptions = {
   origin: (origin, callback) => {
     if (!whitelist.includes(origin!)) { callback(new Error('CORS not allowed')) }
