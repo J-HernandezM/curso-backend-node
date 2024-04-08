@@ -10,13 +10,17 @@ const port = 3000;
 const whitelist = ['http://localhost:5500', `http://localhost:${port}`, 'https://curso-backend-node-production.up.railway.app']
 const options: CorsOptions = {
   origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true)
+      return
+    }
     if (!whitelist.includes(origin!)) { callback(new Error('CORS not allowed')) }
     callback(null, true)
   }
 }
 
+
 app.use(e.json());
-app.use(cors(options))
 
 app.get('/', (req, res) => {
   res.send('Servidor express')
@@ -26,7 +30,9 @@ app.get('/nueva-ruta', (req, res) => {
   res.send('Nueva ruta')
 })
 
+
 apiRouter(app);
+app.use(cors(options))
 app.use(logErrors)
 app.use(boomErrorHandler)
 app.use(errorHandler)
