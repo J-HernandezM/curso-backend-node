@@ -6,7 +6,7 @@ import cors, { CorsOptions } from 'cors'
 import { logErrors, errorHandler, boomErrorHandler } from './middlewares/error.handler'
 
 const app = e();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const whitelist = ['http://localhost:5500', `http://localhost:${port}`, 'https://curso-backend-node-production.up.railway.app']
 const options: CorsOptions = {
   origin: (origin, callback) => {
