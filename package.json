@@ -2,10 +2,10 @@
   "name": "e-commerce",
   "version": "1.0.0",
   "description": "",
-  "main": "./index.ts",
+  "main": "./index.js",
   "type": "module",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "tsx dist/index.js",
     "dev": "tsx watch src/index.ts",
     "lint": "eslint",
     "build": "tsc -p ."
