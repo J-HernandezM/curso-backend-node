@@ -2,8 +2,6 @@
 import e from "express";
 import apiRouter from "./app/api.router";
 import cors, { CorsOptions } from 'cors'
-import "reflect-metadata"
-
 import { logErrors, errorHandler, boomErrorHandler } from './middlewares/error.handler'
 
 const app = e();
