@@ -1,13 +1,17 @@
 import { faker } from "@faker-js/faker"
 import { User } from "./users.model"
 import { notFound } from "@hapi/boom"
-import { getConnection } from "../../lib/postgres"
+import { Pool } from "pg"
+import { pool } from "../../lib/postgres.pool"
 
 export default class UserService {
   private users: User[] = []
+  private pool: Pool;
 
   constructor() {
     this.generateUserArray()
+    this.pool = pool
+    this.pool.on('error', (err) => console.error(err))
   }
 
   generateUserArray() {
@@ -46,15 +50,10 @@ export default class UserService {
   }
 
   getUserTasks() {
+    const query = 'SELECT * FROM tasks'
+
     return new Promise((resolve, reject) => {
-      getConnection()
-        .then(client => {
-          client.query('SELECT * FROM tasks')
-            .then(res => resolve(res.rows))
-            .catch(error => reject(error))
-          // .finally(() => client.end());
-        })
-        .catch(error => reject(error));
+      this.pool.query(query).then(rta => resolve(rta.rows))
     })
   }
 

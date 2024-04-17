@@ -1,12 +1,17 @@
 import { faker } from "@faker-js/faker"
 import { Product } from "./products.model";
 import { conflict, notFound } from "@hapi/boom";
+import { Pool } from "pg";
+import { pool } from "../../lib/postgres.pool";
 
 class ProductService {
   private products: Product[] = []
+  private pool: Pool
 
   constructor() {
     this.generateProductArray();
+    this.pool = pool
+    this.pool.on('error', (err) => console.error(err))
   }
 
   generateProductArray(): void {
@@ -36,10 +41,11 @@ class ProductService {
     return newProduct
   }
 
-  getProducts(): Promise<Product[]> {
+  getProducts(): Promise<any> {
     // Connection to DB its asynchronous
+    const query = 'SELECT * FROM tasks'
     return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(this.products), 1000)
+      this.pool.query(query).then(rta => resolve(rta.rows))
     })
   }
 
