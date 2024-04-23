@@ -19,6 +19,7 @@
     "@types/joi": "^17.2.3",
     "@types/node": "^20.12.7",
     "@types/pg": "^8.11.5",
+    "@types/sequelize": "^4.28.20",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

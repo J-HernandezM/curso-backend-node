@@ -1,11 +1,13 @@
 import e from "express";
 import UserService from "./users.service";
+import { createUserSchema, getUserSchema, updateUserSchema } from "../../schemas/user.schema";
+import validator from "../../middlewares/validator.handler";
 
 const router = e.Router();
 const service = new UserService();
 
-router.get('/', (req, res) => {
-  const data = 'datos'
+router.get('/', async (req, res) => {
+  const data = await service.getAll();
   res.status(200).json(data)
 });
 
@@ -15,41 +17,40 @@ router.get('/tasks', async (req, res) => {
   res.status(200).json(data)
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validator(getUserSchema, 'params'), async (req, res) => {
   const { id } = req.params;
+  const user = await service.findOne(Number(id))
 
   res.json({
-    id,
-    name: 'Arturo',
-    type: 'employee'
+    data: user
   });
 });
 
-router.post('/', (req, res) => {
-  const { body } = req.body
+router.post('/', validator(createUserSchema, 'body'), async (req, res) => {
+  const user = await service.createUser(req.body)
 
   res.status(201).json({
     message: "content created succesfully",
-    data: {}
+    data: user
   })
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validator(getUserSchema, 'params'), async (req, res) => {
   const { id } = req.params;
+  await service.deleteUser(Number(id));
 
   res.status(200).json({
     message: 'content deleted succesfully',
-    id
   })
 })
 
-router.patch('/:id', (req, res) => {
+router.patch('/:id', validator(getUserSchema, 'params'), validator(updateUserSchema, 'body'), async (req, res) => {
   const { id } = req.params;
+  const user = await service.updateUser(Number(id), req.body)
 
   res.status(200).json({
     message: 'content patched succesfully',
-    data: {},
-    id
+    data: user,
   })
 })
 

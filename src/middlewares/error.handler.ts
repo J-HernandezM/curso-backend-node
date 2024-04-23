@@ -1,5 +1,6 @@
-import { Boom } from "@hapi/boom"
+import { Boom, badRequest } from "@hapi/boom"
 import { NextFunction, Request, Response } from "express"
+import { ValidationError } from "sequelize"
 
 const logErrors = (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err)
@@ -13,6 +14,12 @@ const errorHandler = (err: Error, req: Request, res: Response, next: NextFunctio
   })
 }
 
+const sqlErrorHandler = (err: ValidationError, req: Request, res: Response, next: NextFunction) => {
+  if (!(err instanceof ValidationError)) { next(err) }
+
+  boomErrorHandler(badRequest(err.errors[0].message), req, res, next)
+}
+
 const boomErrorHandler = (err: Boom, req: Request, res: Response, next: NextFunction) => {
   if (!err.isBoom) { next(err) }
 
@@ -20,5 +27,5 @@ const boomErrorHandler = (err: Boom, req: Request, res: Response, next: NextFunc
   res.status(output.statusCode).json(output.payload)
 }
 
-export { logErrors, errorHandler, boomErrorHandler };
+export { logErrors, errorHandler, boomErrorHandler, sqlErrorHandler };
 

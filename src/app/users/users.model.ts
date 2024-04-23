@@ -1,8 +1,10 @@
 export interface User {
   id?: number;
   name: string;
-  type: string;
-  tasks: Task;
+  email: string;
+  password: string;
+  // type: string;
+  // tasks: Task;
 }
 
 export interface Task {

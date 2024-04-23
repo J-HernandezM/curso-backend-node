@@ -1,47 +1,33 @@
-import { faker } from "@faker-js/faker"
-import { User } from "./users.model"
 import { notFound } from "@hapi/boom"
 import { sequelize } from "../../lib/sequelize"
+import { User } from "../../db/models/user.model"
 
 export default class UserService {
   private users: User[] = []
 
   constructor() {
-    this.generateUserArray()
   }
 
-  generateUserArray() {
-    for (let i = 0; i < 20; i++) {
-      this.users.push({
-        id: i,
-        name: faker.person.fullName(),
-        tasks: {
-          id: i,
-          title: `Buy some ${faker.commerce.productName()}`,
-          completed: faker.datatype.boolean()
-        },
-        type: faker.person.jobDescriptor()
-      })
-    }
-  };
-
-  createUser(user: User): User {
-    const { name, tasks, type } = user
-    const newUser = {
-      id: this.users.length + 1,
-      name,
-      tasks,
-      type,
-    }
-
-    this.users.push(newUser)
-
-    return newUser
-  }
-
-  getAll() {
+  createUser(user: any): Promise<User> {
     return new Promise((resolve, reject) => {
-      resolve(this.users)
+      sequelize.models.User.create(user).then((res: any) => resolve(res))
+        .catch(error => reject(error))
+    })
+  }
+
+  getAll(): Promise<User[]> {
+    return new Promise((resolve, reject) => {
+      sequelize.models.User.findAll().then((res: any) => resolve(res))
+        .catch(error => reject(error))
+    })
+  }
+
+  findOne(id: number): Promise<User> {
+    return new Promise((resolve, reject) => {
+      sequelize.models.User.findByPk(id).then((res: any) => {
+        if (!res) { reject(notFound('user not found')) }
+        resolve(res)
+      })
     })
   }
 
@@ -50,42 +36,25 @@ export default class UserService {
 
     return new Promise((resolve, reject) => {
       sequelize.query(query).then((res: any) => resolve(res[0]))
-        .catch(error => {
-          console.error('Error al ejecutar la consulta:', error);
-        });
+        .catch(error => reject(error))
     })
   }
 
-  getUserById(id: number): Promise<User> {
-    return new Promise((resolve, reject) => {
-      const index = this.users.findIndex(user => user.id === id)
-      if (index === -1) { reject(notFound('Product not found')) }
+  async updateUser(id: number, changes: any): Promise<any> {
+    const user = await this.findOne(id);
 
-      resolve(this.users[index])
+    return new Promise((resolve, reject) => {
+      user.update(changes).then(res => resolve(res))
+        .catch(error => reject(error))
     })
   }
 
-  updateUser(id: number, changes: User): Promise<User> {
+  async deleteUser(id: number): Promise<void> {
+    const user = await this.findOne(id)
+
     return new Promise((resolve, reject) => {
-      const index = this.users.findIndex(user => user.id === id)
-      if (index === -1) { reject(notFound('user not found')) }
-
-      const updatedUser = {
-        ...this.users[index],
-        ...changes
-      }
-      this.users.splice(index, 1, updatedUser)
-
-      resolve(this.users[index])
-    })
-  }
-
-  deleteUser(id: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const index = this.users.findIndex(user => user.id === id)
-      if (index === -1) { reject(notFound('user not found')) }
-      this.users.splice(index, 1)
-      resolve()
+      user.destroy().then(res => resolve())
+        .catch(error => reject(error))
     })
   }
 
