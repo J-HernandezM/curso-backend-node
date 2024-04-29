@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize, NOW } from "sequelize";
+import { Model, DataTypes, Sequelize } from "sequelize";
 
 type CustomSchemas = {
   [key: string]: any
@@ -22,17 +22,27 @@ export const UserSchema: CustomSchemas = {
     allowNull: false,
     type: DataTypes.STRING
   },
-  createdAt: {
+  role: {
     allowNull: false,
-    type: DataTypes.DATE,
-    field: 'created_at',
-    defaultValue: DataTypes.NOW,
+    type: DataTypes.STRING,
+    defaultValue: 'customer'
+  },
+  name: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    defaultValue: 'Jhon Doe'
+  },
+  createdAt: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+    defaultValue: Sequelize.fn('now'),
+    field: "created_at"
   },
   updatedAt: {
+    type: DataTypes.DATEONLY,
     allowNull: false,
-    type: DataTypes.DATE,
-    field: 'updated_at',
-    defaultValue: DataTypes.NOW,
+    defaultValue: Sequelize.fn('now'),
+    field: "updated_at"
   }
 }
 

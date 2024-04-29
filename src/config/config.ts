@@ -1,6 +1,5 @@
 import 'dotenv/config'
 
-
 // Cuando uses postgress cambiar variable de entorno a db_port
 export const config = {
   env: process.env.NODE_ENV || 'dev',
@@ -9,5 +8,5 @@ export const config = {
   dbPassword: process.env.DB_PASSWORD,
   dbHost: process.env.DB_HOST,
   dbName: process.env.DB_NAME,
-  dbPort: process.env.SQL_PORT,
+  dbPort: process.env.DB_PORT,
 }
