@@ -47,8 +47,11 @@ export const UserSchema: CustomSchemas = {
 }
 
 export class User extends Model {
-  static associate() {
-
+  static associate(models: any) {
+    this.hasOne(models.Customer, {
+      as: 'customer',
+      foreignKey: 'userId'
+    })
   }
 
   static config(sequelize: Sequelize) {

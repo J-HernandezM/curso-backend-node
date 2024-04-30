@@ -17,7 +17,9 @@ export default class UserService {
 
   getAll(): Promise<User[]> {
     return new Promise((resolve, reject) => {
-      sequelize.models.User.findAll().then((res: any) => resolve(res))
+      sequelize.models.User.findAll({
+        include: ['customer']
+      }).then((res: any) => resolve(res))
         .catch(error => reject(error))
     })
   }

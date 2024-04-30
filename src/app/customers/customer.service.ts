@@ -5,7 +5,9 @@ import { sequelize } from "../../lib/sequelize";
 export class CustomerService {
   getCustomers(): Promise<Customer[]> {
     return new Promise((resolve, reject) => {
-      sequelize.models.Customer.findAll().then((res: any) => resolve(res))
+      sequelize.models.Customer.findAll({
+        include: ['user']
+      }).then((res: any) => resolve(res))
         .catch(error => reject(error))
     })
   }
@@ -21,7 +23,10 @@ export class CustomerService {
 
   createCustomer(customer: any): Promise<Customer> {
     return new Promise((resolve, reject) => {
-      sequelize.models.Customer.create(customer).then(res => resolve(res))
+      sequelize.models.Customer.create(customer, {
+        include: ['user']
+      })
+        .then(res => resolve(res))
         .catch(error => reject(error))
     })
   }
