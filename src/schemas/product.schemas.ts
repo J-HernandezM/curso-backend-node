@@ -5,13 +5,15 @@ const name = Joi.string().min(3).max(50)
 const price = Joi.number().positive().integer().min(5)
 const image = Joi.string().uri()
 const blocked = Joi.boolean()
+const description = Joi.string().min(7)
 
 const createProductSchema = Joi.object({
   id,
   name: name.required(),
   price: price.required(),
   image: image.required(),
-  blocked: blocked.required()
+  blocked: blocked.required(),
+  description: description.required()
 })
 
 const updateProductSchema = Joi.object({
@@ -19,7 +21,8 @@ const updateProductSchema = Joi.object({
   name,
   price,
   image,
-  blocked
+  blocked,
+  description: description
 })
 
 const getProductSchema = Joi.object({
