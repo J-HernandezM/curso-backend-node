@@ -35,7 +35,7 @@ export class Categorie extends Model {
   static associate(models: any) {
     this.hasMany(models.Product, {
       as: 'product',
-      foreignKey: 'categoryId'
+      foreignKey: 'categorieId'
     })
   }
 
@@ -43,8 +43,8 @@ export class Categorie extends Model {
     return {
       sequelize,
       tableName: CATEGORIES_TABLE,
-      modelName: 'Category',
-      timestamp: false
+      modelName: 'Categorie',
+      timestamps: false
     }
   }
 }

@@ -29,7 +29,7 @@ export const ProductSchema: CustomSchemas = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  categoryId: {
+  categorieId: {
     field: 'category_id',
     allowNull: false,
     type: DataTypes.INTEGER,
@@ -53,7 +53,7 @@ export const PRODUCTS_TABLE = 'product'
 export class Product extends Model {
 
   static associate(models: any) {
-    this.belongsTo(models.Category, { as: 'category' })
+    this.belongsTo(models.Categorie, { as: 'categorie' })
   }
 
   static config(sequelize: Sequelize) {
@@ -61,7 +61,7 @@ export class Product extends Model {
       sequelize,
       tableName: PRODUCTS_TABLE,
       modelName: 'Product',
-      timestamp: false
+      timestamps: false
     }
   }
 }

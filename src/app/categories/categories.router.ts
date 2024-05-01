@@ -1,6 +1,6 @@
 import e from "express";
 import validator from "../../middlewares/validator.handler";
-import { createCategorySchema, getCategorySchema, updateCategorySchema } from "../../schemas/categories.schema";
+import { createCategorieSchema, getCategorieSchema, updateCategorieSchema } from "../../schemas/categories.schema";
 import { CategorieService } from "./categories.service";
 
 const router = e.Router();
@@ -12,29 +12,29 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id',
-  validator(getCategorySchema, 'params'),
+  validator(getCategorieSchema, 'params'),
   async (req, res) => {
     const { id } = req.params;
-    const category = await service.findOne(Number(id))
+    const categorie = await service.findOne(Number(id))
 
     res.json({
-      data: category
+      data: categorie
     });
   });
 
 router.post('/',
-  validator(createCategorySchema, 'body'),
+  validator(createCategorieSchema, 'body'),
   async (req, res) => {
-    const category = await service.createCategorie(req.body)
+    const categorie = await service.createCategorie(req.body)
 
     res.status(201).json({
       message: "categorie created succesfully",
-      data: category
+      data: categorie
     })
   })
 
 router.delete('/:id',
-  validator(getCategorySchema, 'params'),
+  validator(getCategorieSchema, 'params'),
   async (req, res) => {
     const { id } = req.params;
     await service.deleteCategorie(Number(id));
@@ -45,23 +45,23 @@ router.delete('/:id',
   })
 
 router.patch('/:id',
-  validator(getCategorySchema, 'params'),
-  validator(updateCategorySchema, 'body'),
+  validator(getCategorieSchema, 'params'),
+  validator(updateCategorieSchema, 'body'),
   async (req, res) => {
     const { id } = req.params;
-    const category = await service.updateCategorie(Number(id), req.body)
+    const categorie = await service.updateCategorie(Number(id), req.body)
 
     res.status(200).json({
       message: 'categorie patched succesfully',
-      data: category,
+      data: categorie,
     })
   })
 
-router.get('/:categoryId/products/:productId', (req, res) => {
-  const { categoryId, productId } = req.params;
+router.get('/:categorieId/products/:productId', (req, res) => {
+  const { categorieId, productId } = req.params;
 
   res.json({
-    categoryId,
+    categorieId,
     productId
   });
 });

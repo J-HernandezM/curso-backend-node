@@ -6,7 +6,7 @@ export class ProductService {
   getProducts(): Promise<Product[]> {
     return new Promise((resolve, reject) => {
       sequelize.models.Product.findAll({
-        include: ['category']
+        include: ['categorie']
       }).then((res: any) => resolve(res))
         .catch(error => reject(error))
     })

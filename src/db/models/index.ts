@@ -7,10 +7,11 @@ import { Categorie, CategorieSchema } from "./categories.model";
 export const setupModels = (sequelize: Sequelize) => {
   User.init(UserSchema, User.config(sequelize))
   Customer.init(CustomerSchema, Customer.config(sequelize))
-  Categorie.init(CategorieSchema, CategorieSchema.config(sequelize))
+  Categorie.init(CategorieSchema, Categorie.config(sequelize))
   Product.init(ProductSchema, Product.config(sequelize))
 
   User.associate(sequelize.models)
   Customer.associate(sequelize.models)
   Categorie.associate(sequelize.models)
+  Product.associate(sequelize.models)
 }

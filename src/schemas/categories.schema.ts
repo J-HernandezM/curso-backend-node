@@ -2,20 +2,20 @@ import Joi from "joi";
 
 const id = Joi.number().integer().min(0);
 const image = Joi.string();
-const title = Joi.string().min(5)
+const name = Joi.string().min(5)
 
-export const createCategorySchema = Joi.object({
+export const createCategorieSchema = Joi.object({
   id,
-  title: title.required(),
+  name: name.required(),
   image: image.required(),
 })
 
-export const updateCategorySchema = Joi.object({
+export const updateCategorieSchema = Joi.object({
   id,
-  title,
+  name,
   image
 })
 
-export const getCategorySchema = Joi.object({
+export const getCategorieSchema = Joi.object({
   id: id.required()
 })
