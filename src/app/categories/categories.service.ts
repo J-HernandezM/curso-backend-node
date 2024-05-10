@@ -13,7 +13,9 @@ export class CategorieService {
 
   findOne(id: number): Promise<Categorie> {
     return new Promise((resolve, reject) => {
-      sequelize.models.Categorie.findByPk(id).then((res: any) => {
+      sequelize.models.Categorie.findByPk(id, {
+        include: ['product']
+      }).then((res: any) => {
         if (!res) { reject(notFound('user not found')) }
         resolve(res)
       })
