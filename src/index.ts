@@ -2,8 +2,7 @@
 import e from "express";
 import apiRouter from "./app/api.router";
 import cors, { CorsOptions } from 'cors'
-
-import { logErrors, errorHandler, boomErrorHandler } from './middlewares/error.handler'
+import { logErrors, errorHandler, boomErrorHandler, sqlErrorHandler } from './middlewares/error.handler'
 
 const app = e();
 const port = process.env.PORT || 3000;
@@ -34,6 +33,7 @@ app.get('/nueva-ruta', (req, res) => {
 apiRouter(app);
 app.use(cors(options))
 app.use(logErrors)
+app.use(sqlErrorHandler)
 app.use(boomErrorHandler)
 app.use(errorHandler)
 

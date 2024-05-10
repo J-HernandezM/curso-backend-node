@@ -1,81 +1,48 @@
-import { faker } from "@faker-js/faker"
-import { Product } from "./products.model";
-import { conflict, notFound } from "@hapi/boom";
+import { notFound } from "@hapi/boom";
+import { sequelize } from "../../lib/sequelize";
+import { Product } from "../../db/models/product.model";
 
-class ProductService {
-  private products: Product[] = []
-
-  constructor() {
-    this.generateProductArray();
-  }
-
-  generateProductArray(): void {
-    for (let i = 1; i <= 100; i++) {
-      this.products.push({
-        id: i,
-        name: faker.commerce.productName(),
-        price: Number(faker.commerce.price()),
-        image: faker.image.url(),
-        blocked: faker.datatype.boolean()
-      })
-    }
-  }
-
-  createProduct(product: Product): Product {
-    const { name, price, image, blocked } = product;
-    const newProduct = {
-      id: this.products.length + 1,
-      name,
-      image,
-      price,
-      blocked
-    }
-
-    this.products.push(newProduct)
-
-    return newProduct
-  }
-
+export class ProductService {
   getProducts(): Promise<Product[]> {
-    // Connection to DB its asynchronous
     return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(this.products), 1000)
+      sequelize.models.Product.findAll({
+        include: ['categorie']
+      }).then((res: any) => resolve(res))
+        .catch(error => reject(error))
     })
   }
 
-  getProductById(id: number): Promise<Product> {
+  findOne(id: number): Promise<Product> {
     return new Promise((resolve, reject) => {
-      const i = this.products.findIndex(product => product.id === id)
-      if (i === -1) { reject(notFound('Product not found')) }
-      if (this.products[i].blocked === true) { reject(conflict('Product is blocked')) }
-
-      resolve(this.products[i])
+      sequelize.models.Product.findByPk(id).then((res: any) => {
+        if (!res) { reject(notFound('user not found')) }
+        resolve(res)
+      })
     })
   }
 
-  updateProduct(id: number, changes: Product): Promise<Product> {
+  createProduct(customer: any): Promise<Product> {
     return new Promise((resolve, reject) => {
-      const i = this.products.findIndex(product => product.id === id)
-      if (i === -1) { reject(notFound('Product not found')) }
-
-      this.products[i] = {
-        ...this.products[i],
-        ...changes
-      }
-
-      resolve(this.products[i])
+      sequelize.models.Product.create(customer, {
+      })
+        .then(res => resolve(res))
+        .catch(error => reject(error))
     })
   }
 
-  deleteProduct(id: number): Promise<void> {
+  async updateProduct(id: number, changes: any): Promise<any> {
+    const product = await this.findOne(id)
     return new Promise((resolve, reject) => {
-      const exist = this.products.some(product => product.id === id)
-      if (!exist) { reject(notFound('Product not found')) }
+      product.update(changes).then(res => resolve(res))
+        .catch(error => reject(error))
+    })
+  }
 
-      this.products = this.products.filter(product => product.id !== id)
-      resolve()
+  async deleteProduct(id: number): Promise<void> {
+    const product = await this.findOne(id)
+    return new Promise((resolve, reject) => {
+      product.destroy().then(res => resolve(res))
+        .catch(error => reject(error))
     })
   }
 }
-
-export default ProductService

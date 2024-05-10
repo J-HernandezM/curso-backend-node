@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  myDb:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PG_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PG_PASSWORD}
+    ports:
+      - ${PG_PORT}:${REFPORT}
+  mysql:
+    image: mysql:5
+    environment:
+    - MYSQL_USER=root
+    - MYSQL_DATABASE=${DB_NAME}
+    - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    - MYSQL_PORT=${SQL_PORT}
+    ports:
+      - 33061:${SQL_PORT}
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - PMA_HOST=mysql
+    ports:
+      - ${SQL_ADMIN_PORT}:${REFPORT}
+
