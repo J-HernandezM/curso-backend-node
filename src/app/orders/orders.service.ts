@@ -4,7 +4,9 @@ import { sequelize } from "../../lib/sequelize";
 export class OrderService {
   getOrders(): Promise<Order[]> {
     return new Promise((resolve, reject) => {
-      sequelize.models.Order.findAll()
+      sequelize.models.Order.findAll({
+        include: ['items']
+      })
         .then(res => resolve(res))
         .catch(err => reject(err))
     })
@@ -22,7 +24,7 @@ export class OrderService {
             as: 'user',
             attributes: ['email'],
           }]
-        }]
+        }, 'items']
       })
         .then((res: any) => resolve(res))
         .catch(err => reject(err))
@@ -40,6 +42,20 @@ export class OrderService {
   createOrder(order: any): Promise<Order> {
     return new Promise((resolve, reject) => {
       sequelize.models.Order.create(order)
+        .then((res: any) => resolve(res))
+        .catch(err => reject(err))
+    })
+  }
+
+  addItem(body: any, orderId: number, productId: number): Promise<any> {
+    const newItem = {
+      orderId,
+      productId,
+      amount: body.amount,
+    }
+
+    return new Promise((resolve, reject) => {
+      sequelize.models.OrderProduct.create(newItem)
         .then((res: any) => resolve(res))
         .catch(err => reject(err))
     })

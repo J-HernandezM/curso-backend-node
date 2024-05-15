@@ -1,6 +1,6 @@
 import e from "express";
 import { OrderService } from "./orders.service";
-import { addItemSchema, createOrderSchema, getOrderSchema, updateOrderSchema } from "../../schemas/orders.schema";
+import { addItemSchema, createOrderSchema, getItemSchema, getOrderSchema, updateOrderSchema } from "../../schemas/orders.schema";
 import validator from "../../middlewares/validator.handler";
 
 const router = e.Router();
@@ -34,9 +34,18 @@ router.get('/customer/:id', validator(getOrderSchema, 'params'), async (req, res
   res.json(order)
 })
 
-router.post('/add-item', validator(addItemSchema, 'body'), async (req, res) => {
+router.post('/:orderId/product/:productId',
+  validator(getItemSchema, 'params'),
+  validator(addItemSchema, 'body'),
+  async (req, res) => {
+    const { body, params: { orderId, productId } } = req
+    const newItem = await service.addItem(body, +orderId, +productId)
 
-})
+    res.status(200).json({
+      message: 'item added correctly to the order',
+      data: newItem
+    })
+  })
 
 router.get('/:id', validator(getOrderSchema, 'params'), async (req, res) => {
   const { id } = req.params

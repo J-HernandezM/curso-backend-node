@@ -20,8 +20,11 @@ export const getOrderSchema = Joi.object({
   id: id.required()
 })
 
-export const addItemSchema = Joi.object({
+export const getItemSchema = Joi.object({
   orderId: id.required(),
   productId: id.required(),
+})
+
+export const addItemSchema = Joi.object({
   amount: amount.required()
 })

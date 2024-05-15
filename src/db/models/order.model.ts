@@ -31,9 +31,20 @@ export const OrderSchema: CustomSchemas = {
     field: 'created_at',
     defaultValue: Sequelize.fn('now'),
   },
+  total: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      if (this.items.length < 0) { return 0 }
+
+      return this.items.reduce((t: number, item: any) => {
+        return t + (item.price * item.OrderProduct.amount)
+      }, 0)
+    }
+  }
 }
 
 export class Order extends Model {
+
   static associate(models: any) {
     this.belongsTo(models.Customer, { as: 'customer' })
     this.belongsToMany(
