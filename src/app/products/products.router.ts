@@ -1,7 +1,7 @@
 import e from "express";
 import 'express-async-errors'
 import validator from "../../middlewares/validator.handler";
-import { createProductSchema, getProductSchema, updateProductSchema } from "../../schemas/product.schemas";
+import { createProductSchema, getProductSchema, queryProductSchema, updateProductSchema } from "../../schemas/product.schemas";
 import { ProductService } from "./products.service";
 import { Product } from "../../db/models/product.model";
 
@@ -9,8 +9,9 @@ import { Product } from "../../db/models/product.model";
 const router = e.Router();
 const service = new ProductService;
 
-router.get('/', async (req, res) => {
-  const products: Product[] = await service.getProducts()
+router.get('/', validator(queryProductSchema, 'query'), async (req, res) => {
+  const { query } = req
+  const products: Product[] = await service.getProducts(query)
   res.status(200).json(products)
 })
 

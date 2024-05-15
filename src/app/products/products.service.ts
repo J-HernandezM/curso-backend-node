@@ -1,13 +1,23 @@
 import { notFound } from "@hapi/boom";
 import { sequelize } from "../../lib/sequelize";
 import { Product } from "../../db/models/product.model";
+import { FindOptions } from "sequelize";
+import QueryString from "qs";
 
 export class ProductService {
-  getProducts(): Promise<Product[]> {
+  getProducts(query: QueryString.ParsedQs): Promise<Product[]> {
+    const { limit, offset } = query;
+    const options: FindOptions<any> = {
+      include: ['categorie']
+    }
+    if (limit && offset) {
+      options.limit = +limit;
+      options.offset = +offset;
+    }
+
     return new Promise((resolve, reject) => {
-      sequelize.models.Product.findAll({
-        include: ['categorie']
-      }).then((res: any) => resolve(res))
+      sequelize.models.Product.findAll(options)
+        .then((res: any) => resolve(res))
         .catch(error => reject(error))
     })
   }
