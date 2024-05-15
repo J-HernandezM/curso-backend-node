@@ -1,18 +1,39 @@
 import { notFound } from "@hapi/boom";
 import { sequelize } from "../../lib/sequelize";
 import { Product } from "../../db/models/product.model";
-import { FindOptions } from "sequelize";
+import { FindOptions, WhereOptions } from "sequelize";
 import QueryString from "qs";
+import { Op } from "sequelize";
+
+interface PriceWhereOption {
+  price: number
+}
+
+interface CustomFindOptions extends FindOptions {
+  where: WhereOptions<any>
+}
 
 export class ProductService {
   getProducts(query: QueryString.ParsedQs): Promise<Product[]> {
-    const { limit, offset } = query;
-    const options: FindOptions<any> = {
-      include: ['categorie']
+    const { limit, offset, price_min, price_max } = query;
+    const options: CustomFindOptions = {
+      include: ['categorie'],
+      where: {}
     }
+
+    // If limit and offset do exist, then add them to the options of the sql querie
     if (limit && offset) {
       options.limit = +limit;
       options.offset = +offset;
+    }
+
+    // If price exist then
+    if (price_min && price_max) {
+      options.where = {
+        price: {
+          [Op.between]: [price_min, price_max]
+        }
+      }
     }
 
     return new Promise((resolve, reject) => {
