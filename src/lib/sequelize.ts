@@ -7,6 +7,8 @@ import { setupModels } from "../db/models";
 // Para mysql usar puerto 33601, usamos root como usario, usamos la misma clave, el puerto debe ser 33061, de resto igual
 // const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`
 
+console.log(config.dbUrl)
+
 export const sequelize = new Sequelize(config.dbUrl!, {
   dialect: 'postgres'
 })
