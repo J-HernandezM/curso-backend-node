@@ -11,7 +11,7 @@ module.exports = {
     dialect: 'postgres'
   },
   production: {
-    url: URI,  // Cuando hagamos deploy cambiamos esto
+    url: config.dbUrl,
     dialect: 'postgres'
   }
 }
