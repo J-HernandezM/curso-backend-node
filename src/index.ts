@@ -13,7 +13,7 @@ const options: CorsOptions = {
       callback(null, true)
       return
     }
-    if (!whitelist.includes(origin!)) { callback(new Error('CORS not allowed')) }
+    if (!whitelist.includes(origin)) { callback(new Error('CORS not allowed')) }
     callback(null, true)
   }
 }

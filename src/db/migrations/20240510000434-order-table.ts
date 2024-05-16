@@ -1,6 +1,5 @@
 import { CUSTOMER_TABLE } from '../models/customer.model';
-import { ORDERS_TABLE, OrderSchema } from '../models/order.model';
-import { PRODUCTS_TABLE, ProductSchema } from '../models/product.model';
+import { ORDERS_TABLE } from '../models/order.model';
 import { DataTypes, QueryInterface, Sequelize } from 'sequelize';
 
 /** @type {import('sequelize-cli').Migration} */
