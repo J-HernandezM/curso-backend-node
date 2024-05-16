@@ -37,8 +37,9 @@ To get started with the E-commerce Backend API, follow the instructions below:
 ## Base URL
 
 To all your requests use the following URL as your base URL:
+
 ```
-https://curso-backend-node-production.up.railway.app/api/v1
+https://ecommerce-api-node.up.railway.app/api/v1
 ```
 
 ## Table of Contents
