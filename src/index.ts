@@ -6,7 +6,7 @@ import { logErrors, errorHandler, boomErrorHandler, sqlErrorHandler } from './mi
 
 const app = e();
 const port = process.env.PORT || 3000;
-const whitelist = ['http://localhost:5500', `http://localhost:${port}`, 'https://curso-backend-node-production.up.railway.app']
+const whitelist = ['http://localhost:5500', `http://localhost:${port}`, 'https://ecommerce-api-node.up.railway.app']
 const options: CorsOptions = {
   origin: (origin, callback) => {
     if (!origin) {
